@@ -1,4 +1,4 @@
-// Simple AES-GCM encryption wrapper for localStorage
+// AES-GCM encryption wrapper for localStorage
 // persist=true uses a stored key in localStorage; persist=false uses ephemeral in-memory key
 
 let anonKeyPromise = null;
@@ -46,7 +46,6 @@ async function encrypt(persist, data) {
   crypto.getRandomValues(iv);
   const enc = new TextEncoder().encode(JSON.stringify(data));
   const ct = await crypto.subtle.encrypt({ name: 'AES-GCM', iv }, key, enc);
-  // store as iv.b64 + ':' + ct.b64
   return toB64(iv) + ':' + toB64(ct);
 }
 
@@ -73,12 +72,7 @@ export async function getItem(name, persist=true) {
   try {
     return await decrypt(persist, payload);
   } catch (e) {
-    // if decryption fails because mode changed, try the other mode as a fallback
-    try {
-      return await decrypt(!persist, payload);
-    } catch (_) {
-      return null;
-    }
+    try { return await decrypt(!persist, payload); } catch (_) { return null; }
   }
 }
 

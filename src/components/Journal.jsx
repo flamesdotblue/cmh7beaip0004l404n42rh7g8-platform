@@ -1,13 +1,13 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { NotebookPen, Save, Calendar, Star } from 'lucide-react';
 import { setItem, getItem } from '../utils/secureStore';
 
 const PROMPTS = [
-  'Describe a thought that’s bothering you. What evidence supports it? What evidence does not?',
-  'Name three things you’re grateful for today and why they matter.',
-  'If your best friend felt how you do, what would you tell them?',
-  'What is one value you want to live by this week? What’s a small action aligned with it?',
-  'Identify any cognitive distortions (all-or-nothing, mind reading, catastrophizing) that appeared today.',
+  'Describe a thought that’s bothering you. Evidence for it? Evidence against it? Your balanced reframe?',
+  'List three things you’re grateful for today and why they mattered.',
+  'If a dear friend felt like you do, what would you say to them?',
+  'Name a value to live by this week. What is one tiny step aligned with it?',
+  'Spot a thinking trap you noticed today (all-or-nothing, catastrophizing, mind reading). How might you reframe it?',
 ];
 
 export default function Journal({ persistMode }) {
@@ -36,10 +36,10 @@ export default function Journal({ persistMode }) {
   const streak = computeStreak(entries);
 
   return (
-    <div className="rounded-2xl bg-white/5 border border-white/10 backdrop-blur-md p-4 md:p-6">
+    <div className="rounded-2xl bg-white/5 border border-white/10 backdrop-blur p-4 md:p-6">
       <div className="flex items-center justify-between mb-4">
-        <div className="flex items-center gap-2 text-white/80"><NotebookPen size={18} /><span className="text-sm">Guided journaling (CBT)</span></div>
-        <div className="text-xs text-white/60 flex items-center gap-3">
+        <div className="flex items-center gap-2 text-slate-200"><NotebookPen size={18} /><span className="text-sm">Guided Journaling (CBT)</span></div>
+        <div className="text-xs text-slate-400 flex items-center gap-3">
           <span className="inline-flex items-center gap-1"><Calendar size={14} /> Today: {todayCount}</span>
           <span className="inline-flex items-center gap-1"><Star size={14} /> Streak: {streak}d</span>
         </div>
@@ -49,37 +49,36 @@ export default function Journal({ persistMode }) {
         <div className="md:col-span-2 space-y-3">
           <div className="rounded-lg border border-white/15 bg-white/10 p-3">
             <div className="flex items-center justify-between">
-              <span className="text-sm text-white/70">Prompt</span>
+              <span className="text-sm text-slate-300">Prompt</span>
               <div className="flex items-center gap-2">
                 <button onClick={() => setPromptIndex((i)=> (i-1+PROMPTS.length)%PROMPTS.length)} className="text-xs px-2 py-1 rounded bg-white/10 border border-white/15 hover:bg-white/15">Prev</button>
                 <button onClick={() => setPromptIndex((i)=> (i+1)%PROMPTS.length)} className="text-xs px-2 py-1 rounded bg-white/10 border border-white/15 hover:bg-white/15">Next</button>
               </div>
             </div>
-            <p className="mt-1 text-white/90 text-sm">{PROMPTS[promptIndex]}</p>
+            <p className="mt-1 text-slate-100 text-sm">{PROMPTS[promptIndex]}</p>
           </div>
-          <textarea value={entry} onChange={(e)=>setEntry(e.target.value)} rows={6} placeholder="Write freely. It’s just for you."
-            className="w-full rounded-lg bg-white/10 border border-white/15 p-3 outline-none placeholder:text-white/40 focus:ring-2 focus:ring-violet-400" />
+          <textarea value={entry} onChange={(e)=>setEntry(e.target.value)} rows={6} placeholder="Write freely. It’s just for you." className="w-full rounded-lg bg-white/10 border border-white/15 p-3 outline-none placeholder:text-slate-400 focus:ring-2 focus:ring-indigo-400" />
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
-              <span className="text-sm text-white/70">Mood:</span>
+              <span className="text-sm text-slate-300">Mood:</span>
               <input type="range" min={1} max={10} value={mood} onChange={(e)=>setMood(e.target.value)} />
-              <span className="text-sm text-white/80">{mood}/10</span>
+              <span className="text-sm text-slate-200">{mood}/10</span>
             </div>
-            <button onClick={saveEntry} className="inline-flex items-center gap-2 h-10 px-4 rounded-lg bg-gradient-to-r from-violet-500 to-fuchsia-500 hover:opacity-95 transition"><Save size={16}/> Save</button>
+            <button onClick={saveEntry} className="inline-flex items-center gap-2 h-10 px-4 rounded-lg bg-gradient-to-r from-indigo-500 to-fuchsia-500 hover:opacity-95 transition"><Save size={16}/> Save</button>
           </div>
         </div>
 
         <div className="space-y-2">
-          <h4 className="text-sm font-medium text-white/80">Recent entries</h4>
+          <h4 className="text-sm font-medium text-slate-200">Recent entries</h4>
           <div className="space-y-2 max-h-[260px] overflow-y-auto pr-1">
-            {entries.length === 0 && <p className="text-xs text-white/50">No entries yet.</p>}
+            {entries.length === 0 && <p className="text-xs text-slate-400">No entries yet.</p>}
             {entries.map(e => (
               <div key={e.id} className="rounded-lg border border-white/15 bg-white/5 p-3">
-                <div className="flex items-center justify-between text-xs text-white/60">
+                <div className="flex items-center justify-between text-xs text-slate-400">
                   <span>{new Date(e.ts).toLocaleString()}</span>
                   <span>Mood {e.mood}/10</span>
                 </div>
-                <p className="mt-2 text-sm text-white/90 whitespace-pre-wrap">{e.text}</p>
+                <p className="mt-2 text-sm text-slate-100 whitespace-pre-wrap">{e.text}</p>
               </div>
             ))}
           </div>
